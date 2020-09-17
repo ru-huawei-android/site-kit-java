@@ -7,6 +7,8 @@
     <string name="radius_1_50000">Radius (1–50000)</string>
     <string name="search">Search</string>
     <string name="site_id">Site ID</string>
+    <string name="default_longitude">37.618423</string>
+    <string name="default_latitude">55.751244</string>
 
     <string-array name="tabs_title">
         <item>Keyword</item>
