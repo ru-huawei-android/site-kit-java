@@ -161,7 +161,7 @@ public class NearbySearchFragment extends Fragment implements SiteAdapter.SiteCa
 
             List<Site> sites = results.getSites();
 
-            if (sites == null || sites.size() == 0) {
+            if (sites == null || sites.isEmpty()) {
                 adapterResult.setList(new ArrayList<>());
                 Toast.makeText(getContext(), R.string.empty_response, Toast.LENGTH_SHORT).show();
                 return;
@@ -172,7 +172,9 @@ public class NearbySearchFragment extends Fragment implements SiteAdapter.SiteCa
 
         @Override
         public void onSearchError(SearchStatus status) {
-            Log.e(TAG, "Error: " + status.getErrorCode() + " - " + status.getErrorMessage());
+            String errorMessage = "Error: " + status.getErrorCode();
+            Log.e(TAG, errorMessage);
+            Toast.makeText(getContext(),errorMessage, Toast.LENGTH_SHORT).show();
             adapterResult.setList(new ArrayList<>());
         }
     };

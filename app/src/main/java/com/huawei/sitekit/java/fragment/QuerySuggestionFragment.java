@@ -25,6 +25,8 @@ import com.huawei.hms.site.api.SearchService;
 import com.huawei.hms.site.api.SearchServiceFactory;
 import com.huawei.hms.site.api.model.Coordinate;
 import com.huawei.hms.site.api.model.LocationType;
+import com.huawei.hms.site.api.model.QuerySuggestionRequest;
+import com.huawei.hms.site.api.model.QuerySuggestionResponse;
 import com.huawei.hms.site.api.model.SearchStatus;
 import com.huawei.hms.site.api.model.Site;
 import com.huawei.hms.site.api.model.TextSearchRequest;
@@ -127,8 +129,7 @@ public class QuerySuggestionFragment extends Fragment implements SiteAdapter.Sit
         String longitude = etLocationLongitude.getText().toString();
         String radius = etRadius.getText().toString();
 
-        TextSearchRequest request = new TextSearchRequest();
-
+        QuerySuggestionRequest request = new QuerySuggestionRequest();
         request.setQuery(etQuery.getText().toString().trim());
 
         if (!latitude.isEmpty() && !longitude.isEmpty()) {
@@ -146,30 +147,34 @@ public class QuerySuggestionFragment extends Fragment implements SiteAdapter.Sit
 
         if (!selectedItem.equals(Config.DEFAULT_LOCATION_TYPE)) {
             LocationType type = converterLocationType.get(selectedItem);
-            request.setPoiType(type);
+            List<LocationType> poiTypes = new ArrayList<>();
+            poiTypes.add(type);
+
+            request.setPoiTypes(poiTypes);
         }
 
         request.setCountryCode(Config.DEFAULT_COUNTRY_CODE);
         request.setLanguage(Config.DEFAULT_LANGUAGE);
-        request.setPageSize(Config.DEFAULT_PAGE_COUNT);
 
-        searchService.textSearch(request, resultListener);
+        searchService.querySuggestion(request, resultListener);
     }
 
 
-    final SearchResultListener<TextSearchResponse> resultListener = new SearchResultListener<TextSearchResponse>() {
+    final SearchResultListener<QuerySuggestionResponse> resultListener = new SearchResultListener<QuerySuggestionResponse>() {
 
         @Override
-        public void onSearchResult(TextSearchResponse results) {
-            if (results == null || results.getTotalCount() <= 0) {
+        public void onSearchResult(QuerySuggestionResponse results) {
+            if (results == null) {
                 adapterResult.setList(new ArrayList<>());
+                Toast.makeText(getContext(), R.string.empty_response, Toast.LENGTH_SHORT).show();
                 return;
             }
 
             List<Site> sites = results.getSites();
 
-            if (sites == null || sites.size() == 0) {
+            if (sites == null || sites.isEmpty()) {
                 adapterResult.setList(new ArrayList<>());
+                Toast.makeText(getContext(), R.string.empty_response, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -178,7 +183,9 @@ public class QuerySuggestionFragment extends Fragment implements SiteAdapter.Sit
 
         @Override
         public void onSearchError(SearchStatus status) {
-            Log.e(TAG, "Error: " + status.getErrorCode() + " - " + status.getErrorMessage());
+            String errorMessage = "Error: " + status.getErrorCode();
+            Log.e(TAG, errorMessage);
+            Toast.makeText(getContext(),errorMessage, Toast.LENGTH_SHORT).show();
             adapterResult.setList(new ArrayList<>());
         }
     };

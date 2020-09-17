@@ -109,12 +109,19 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
      * Search method
      */
     private void search() {
+        String queryText = etQuery.getText().toString().trim();
+
+        if (queryText.isEmpty()) {
+            Toast.makeText(getContext(), R.string.enter_query, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String latitude = etLocationLatitude.getText().toString();
         String longitude = etLocationLongitude.getText().toString();
         String radius = etRadius.getText().toString();
 
         TextSearchRequest request = new TextSearchRequest();
-        request.setQuery(etQuery.getText().toString().trim());
+        request.setQuery(queryText);
 
         if (!latitude.isEmpty() && !longitude.isEmpty()) {
             Coordinate location = new Coordinate(
@@ -154,7 +161,7 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
 
             List<Site> sites = results.getSites();
 
-            if (sites == null || sites.size() == 0) {
+            if (sites == null || sites.isEmpty()) {
                 adapterResult.setList(new ArrayList<>());
                 Toast.makeText(getContext(), R.string.empty_response, Toast.LENGTH_SHORT).show();
                 return;
@@ -165,7 +172,9 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
 
         @Override
         public void onSearchError(SearchStatus status) {
-            Log.e(TAG, "Error: " + status.getErrorCode());
+            String errorMessage = "Error: " + status.getErrorCode();
+            Log.e(TAG, errorMessage);
+            Toast.makeText(getContext(),errorMessage, Toast.LENGTH_SHORT).show();
             adapterResult.setList(new ArrayList<>());
         }
     };

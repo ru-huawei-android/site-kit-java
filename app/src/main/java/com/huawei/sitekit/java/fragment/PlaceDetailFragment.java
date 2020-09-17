@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.huawei.hms.site.api.model.Site;
 import com.huawei.sitekit.java.R;
 import com.huawei.sitekit.java.common.Config;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class PlaceDetailFragment extends Fragment {
@@ -62,12 +64,14 @@ public class PlaceDetailFragment extends Fragment {
     private void search() {
         String siteId = etSiteId.getText().toString().trim();
 
-        DetailSearchRequest request = new DetailSearchRequest();
-        request.setLanguage("en");
-
-        if (!siteId.isEmpty()) {
-            request.setSiteId(siteId);
+        if (siteId.isEmpty()) {
+            Toast.makeText(getContext(), R.string.enter_site_id, Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        DetailSearchRequest request = new DetailSearchRequest();
+        request.setLanguage(Config.DEFAULT_LANGUAGE);
+        request.setSiteId(siteId);
 
         searchService.detailSearch(request, resultListener);
     }
@@ -97,7 +101,10 @@ public class PlaceDetailFragment extends Fragment {
 
         @Override
         public void onSearchError(SearchStatus status) {
-            Log.e(TAG, "Error: " + status.getErrorCode() + " - " + status.getErrorMessage());
+            String errorMessage = "Error: " + status.getErrorCode();
+            Log.e(TAG, errorMessage);
+            Toast.makeText(getContext(),errorMessage, Toast.LENGTH_SHORT).show();
+            tvResult.setText("");
         }
     };
 }
