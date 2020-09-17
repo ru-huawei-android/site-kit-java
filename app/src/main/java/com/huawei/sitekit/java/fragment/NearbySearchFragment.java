@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,7 +43,7 @@ import java.util.Objects;
 
 public class NearbySearchFragment extends Fragment implements SiteAdapter.SiteCallback {
 
-    private static String TAG = "NEARBY_SEARCH_FRAGMENT";
+    private final static String TAG = "NEARBY_SEARCH_FRAGMENT";
 
     private EditText etQuery;
     private EditText etLocationLatitude;
@@ -70,19 +69,12 @@ public class NearbySearchFragment extends Fragment implements SiteAdapter.SiteCa
         Context context = Objects.requireNonNull(getContext());
 
         etQuery = view.findViewById(R.id.editTextKeywordQuery);
-        etLocationLatitude = view.findViewById(R.id.editTextLocationLongitude);
-        etLocationLongitude = view.findViewById(R.id.editTextLocationLatitude);
+        etLocationLatitude = view.findViewById(R.id.editTextLocationLatitude);
+        etLocationLongitude = view.findViewById(R.id.editTextLocationLongitude);
         etRadius = view.findViewById(R.id.editTextRadius);
         etRadius.setFilters(new InputFilter[] { new InputFilterMinMax(1, 50000)});
 
-        View clFilter = view.findViewById(R.id.constraintLayoutFilter);
-        ConstraintLayout clContent = view.findViewById(R.id.constraintLayoutKeyword);
-
-        view.findViewById(R.id.buttonFilter).setOnClickListener(view1 ->
-            AndroidUtils.changeFilterVisible(clContent, clFilter)
-        );
-
-        view.findViewById(R.id.buttonSearch).setOnClickListener(view12 -> search());
+        view.findViewById(R.id.buttonSearch).setOnClickListener(view1 -> search());
 
         adapterResult = new SiteAdapter();
         adapterResult.setCallback(this);
@@ -92,12 +84,16 @@ public class NearbySearchFragment extends Fragment implements SiteAdapter.SiteCa
         rvResult.setLayoutManager(new LinearLayoutManager(getContext()));
 
         converterLocationType = new LinkedHashMap<>();
-        String[] data = new String[HwLocationType.values().length];
+        String[] data = new String[HwLocationType.values().length + 1];
+
         int i = 0;
         for (LocationType type: LocationType.values()) {
             converterLocationType.put(type.name(), type);
             data[i++] = type.name();
         }
+
+        data[0] = Config.DEFAULT_LOCATION_TYPE;
+        converterLocationType.put(Config.DEFAULT_LOCATION_TYPE, null);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.spinner_item, data);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -140,24 +136,26 @@ public class NearbySearchFragment extends Fragment implements SiteAdapter.SiteCa
         }
 
         String selectedItem = (String) spLocationType.getSelectedItem();
-        try {
+        Log.i(TAG, "Selected Item = " + selectedItem);
+        if (!selectedItem.equals(Config.DEFAULT_LOCATION_TYPE)) {
             LocationType type = converterLocationType.get(selectedItem);
             request.setPoiType(type);
-        } catch (Exception ignored) {}
+        }
 
-        request.setLanguage("en");
-        request.setPageSize(10);
+        request.setLanguage(Config.DEFAULT_LANGUAGE);
+        request.setPageSize(Config.DEFAULT_PAGE_COUNT);
 
         searchService.nearbySearch(request, resultListener);
     }
 
 
-    SearchResultListener<NearbySearchResponse> resultListener = new SearchResultListener<NearbySearchResponse>() {
+    final SearchResultListener<NearbySearchResponse> resultListener = new SearchResultListener<NearbySearchResponse>() {
 
         @Override
         public void onSearchResult(NearbySearchResponse results) {
             if (results == null || results.getTotalCount() <= 0) {
                 adapterResult.setList(new ArrayList<>());
+                Toast.makeText(getContext(), R.string.empty_response, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -165,6 +163,7 @@ public class NearbySearchFragment extends Fragment implements SiteAdapter.SiteCa
 
             if (sites == null || sites.size() == 0) {
                 adapterResult.setList(new ArrayList<>());
+                Toast.makeText(getContext(), R.string.empty_response, Toast.LENGTH_SHORT).show();
                 return;
             }
 

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -28,10 +27,9 @@ import java.util.Objects;
 
 public class PlaceDetailFragment extends Fragment {
 
-    private static String TAG = "PLACE_DETAIL_FRAGMENT";
+    private final static String TAG = "PLACE_DETAIL_FRAGMENT";
 
     private EditText etSiteId;
-    private Button btnSearch;
     private TextView tvResult;
 
     // Declare a SearchService object.
@@ -50,7 +48,7 @@ public class PlaceDetailFragment extends Fragment {
         etSiteId = view.findViewById(R.id.editTextSiteId);
         tvResult = view.findViewById(R.id.textViewDetailResult);
 
-        view.findViewById(R.id.buttonSearch).setOnClickListener(view12 -> search());
+        view.findViewById(R.id.buttonSearch).setOnClickListener(view1 -> search());
 
         // Instantiate the SearchService object.
         searchService = SearchServiceFactory.create(context, Config.getAgcApiKey(context));
@@ -74,7 +72,7 @@ public class PlaceDetailFragment extends Fragment {
         searchService.detailSearch(request, resultListener);
     }
 
-    SearchResultListener<DetailSearchResponse> resultListener = new SearchResultListener<DetailSearchResponse>() {
+    final SearchResultListener<DetailSearchResponse> resultListener = new SearchResultListener<DetailSearchResponse>() {
 
         @Override
         public void onSearchResult(DetailSearchResponse results) {

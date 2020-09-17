@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements TabLayoutMediator
 
     static class SearchViewPagerAdapter extends FragmentStateAdapter {
 
-        private static int PAGE_COUNT = 4;
+        private final static int PAGE_COUNT = 4;
 
         public SearchViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
             super(fragmentActivity);

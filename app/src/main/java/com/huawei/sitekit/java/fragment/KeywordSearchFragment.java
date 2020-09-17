@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,7 +42,7 @@ import java.util.Objects;
 
 public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteCallback {
 
-    private static String TAG = "KEYWORD_SEARCH_FRAGMENT";
+    private final static String TAG = "KEYWORD_SEARCH_FRAGMENT";
 
     // Declare a SearchService object.
     private SearchService searchService;
@@ -69,17 +68,10 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
         Context context = Objects.requireNonNull(getContext());
 
         etQuery = view.findViewById(R.id.editTextKeywordQuery);
-        etLocationLatitude = view.findViewById(R.id.editTextLocationLongitude);
-        etLocationLongitude = view.findViewById(R.id.editTextLocationLatitude);
+        etLocationLatitude = view.findViewById(R.id.editTextLocationLatitude);
+        etLocationLongitude = view.findViewById(R.id.editTextLocationLongitude);
         etRadius = view.findViewById(R.id.editTextRadius);
         etRadius.setFilters(new InputFilter[] { new InputFilterMinMax(1, 50000)});
-
-        View clFilter = view.findViewById(R.id.constraintLayoutFilter);
-        ConstraintLayout clContent = view.findViewById(R.id.constraintLayoutKeyword);
-
-        view.findViewById(R.id.buttonFilter).setOnClickListener(button ->
-            AndroidUtils.changeFilterVisible(clContent, clFilter)
-        );
 
         view.findViewById(R.id.buttonSearch).setOnClickListener(button -> search());
 
@@ -91,12 +83,15 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
         rvResult.setLayoutManager(new LinearLayoutManager(context));
 
         converterLocationType = new LinkedHashMap<>();
-        String[] data = new String[LocationType.values().length];
+        String[] data = new String[LocationType.values().length + 1];
         int i = 0;
         for (LocationType type: LocationType.values()) {
             converterLocationType.put(type.name(), type);
             data[i++] = type.name();
         }
+
+        data[0] = Config.DEFAULT_LOCATION_TYPE;
+        converterLocationType.put(Config.DEFAULT_LOCATION_TYPE, null);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.spinner_item, data);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -135,23 +130,25 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
 
         String selectedItem = (String) spLocationType.getSelectedItem();
 
-        LocationType type = converterLocationType.get(selectedItem);
-        request.setPoiType(type);
+        if (!selectedItem.equals(Config.DEFAULT_LOCATION_TYPE)) {
+            LocationType type = converterLocationType.get(selectedItem);
+            request.setPoiType(type);
+        }
 
-        request.setCountryCode("En");
-        request.setLanguage("en");
-
-        request.setPageSize(10);
+        request.setCountryCode(Config.DEFAULT_COUNTRY_CODE);
+        request.setLanguage(Config.DEFAULT_LANGUAGE);
+        request.setPageSize(Config.DEFAULT_PAGE_COUNT);
 
         searchService.textSearch(request, resultListener);
     }
 
 
-    SearchResultListener<TextSearchResponse> resultListener = new SearchResultListener<TextSearchResponse>() {
+    final SearchResultListener<TextSearchResponse> resultListener = new SearchResultListener<TextSearchResponse>() {
         @Override
         public void onSearchResult(TextSearchResponse results) {
             if (results == null || results.getTotalCount() <= 0) {
                 adapterResult.setList(new ArrayList<>());
+                Toast.makeText(getContext(), R.string.empty_response, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -159,6 +156,7 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
 
             if (sites == null || sites.size() == 0) {
                 adapterResult.setList(new ArrayList<>());
+                Toast.makeText(getContext(), R.string.empty_response, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -167,7 +165,7 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
 
         @Override
         public void onSearchError(SearchStatus status) {
-            Log.e(TAG, "Error: " + status.getErrorCode() + " - " + status.getErrorMessage());
+            Log.e(TAG, "Error: " + status.getErrorCode());
             adapterResult.setList(new ArrayList<>());
         }
     };

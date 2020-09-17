@@ -1,7 +1,6 @@
 package com.huawei.sitekit.java.adapter;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +52,8 @@ public class SiteAdapter extends RecyclerView.Adapter<SiteAdapter.SiteViewHolder
 
     public static class SiteViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView textView;
-        private SiteCallback mCallback;
+        private final TextView textView;
+        private final SiteCallback mCallback;
 
         public SiteViewHolder(@NonNull View itemView, SiteCallback callback) {
             super(itemView);

@@ -109,7 +109,8 @@
             app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textLayoutNumber"
-            app:layout_constraintTop_toTopOf="@+id/textLayoutNumber" />
+            app:layout_constraintTop_toTopOf="@+id/textLayoutNumber"
+            style="@style/Widget.AppCompat.DropDownItem.Spinner" />
 
         <Button
             android:id="@+id/buttonSearch"
