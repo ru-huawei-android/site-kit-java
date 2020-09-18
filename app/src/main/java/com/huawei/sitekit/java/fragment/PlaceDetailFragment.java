@@ -24,7 +24,6 @@ import com.huawei.hms.site.api.model.Site;
 import com.huawei.sitekit.java.R;
 import com.huawei.sitekit.java.common.Config;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class PlaceDetailFragment extends Fragment {
@@ -84,17 +83,17 @@ public class PlaceDetailFragment extends Fragment {
             Log.i(TAG, "Site: " + site.getSiteId());
 
             StringBuilder builderPoi = new StringBuilder();
-            for (String poi: site.getPoi().getHwPoiTypes()) {
+            for (String poi : site.getPoi().getHwPoiTypes()) {
                 builderPoi.append(poi).append(" ");
             }
 
             String message = "SITE ID: " + site.getSiteId() +
-                "\nNAME: " + site.getName() +
-                "\nADDRESS: " + site.getFormatAddress() +
-                "\nLAT: " + site.getLocation().getLat() +
-                "LNG: " + site.getLocation().getLng() +
-                "\nPOI: " + builderPoi.toString() +
-                "\nDISTANCE: " + site.getDistance();
+                    "\nNAME: " + site.getName() +
+                    "\nADDRESS: " + site.getFormatAddress() +
+                    "\nLAT: " + site.getLocation().getLat() +
+                    "LNG: " + site.getLocation().getLng() +
+                    "\nPOI: " + builderPoi.toString() +
+                    "\nDISTANCE: " + site.getDistance();
 
             tvResult.setText(message);
         }
@@ -103,7 +102,7 @@ public class PlaceDetailFragment extends Fragment {
         public void onSearchError(SearchStatus status) {
             String errorMessage = "Error: " + status.getErrorCode();
             Log.e(TAG, errorMessage);
-            Toast.makeText(getContext(),errorMessage, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             tvResult.setText("");
         }
     };

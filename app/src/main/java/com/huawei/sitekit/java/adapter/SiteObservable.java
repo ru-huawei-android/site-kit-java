@@ -60,7 +60,7 @@ public class SiteObservable {
 
     public static SiteObservable fromSite(Site site) {
         StringBuilder builderPoi = new StringBuilder();
-        for (String poi: site.getPoi().getHwPoiTypes()) {
+        for (String poi : site.getPoi().getHwPoiTypes()) {
             builderPoi.append(poi).append(" ");
         }
         String coordinated = "Lat b: " + site.getLocation().getLat()

@@ -29,8 +29,6 @@ import com.huawei.hms.site.api.model.QuerySuggestionRequest;
 import com.huawei.hms.site.api.model.QuerySuggestionResponse;
 import com.huawei.hms.site.api.model.SearchStatus;
 import com.huawei.hms.site.api.model.Site;
-import com.huawei.hms.site.api.model.TextSearchRequest;
-import com.huawei.hms.site.api.model.TextSearchResponse;
 import com.huawei.sitekit.java.R;
 import com.huawei.sitekit.java.adapter.SiteAdapter;
 import com.huawei.sitekit.java.adapter.SiteObservable;
@@ -75,7 +73,7 @@ public class QuerySuggestionFragment extends Fragment implements SiteAdapter.Sit
         etLocationLatitude = view.findViewById(R.id.editTextLocationLatitude);
         etLocationLongitude = view.findViewById(R.id.editTextLocationLongitude);
         etRadius = view.findViewById(R.id.editTextRadius);
-        etRadius.setFilters(new InputFilter[] { new InputFilterMinMax(1, 50000)});
+        etRadius.setFilters(new InputFilter[]{new InputFilterMinMax(1, 50000)});
 
         adapterResult = new SiteAdapter();
         adapterResult.setCallback(this);
@@ -86,10 +84,12 @@ public class QuerySuggestionFragment extends Fragment implements SiteAdapter.Sit
 
         etQuery.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -101,7 +101,7 @@ public class QuerySuggestionFragment extends Fragment implements SiteAdapter.Sit
         String[] data = new String[LocationType.values().length + 1];
 
         int i = 0;
-        for (LocationType type: LocationType.values()) {
+        for (LocationType type : LocationType.values()) {
             converterLocationType.put(type.name(), type);
             data[i++] = type.name();
         }
@@ -185,7 +185,7 @@ public class QuerySuggestionFragment extends Fragment implements SiteAdapter.Sit
         public void onSearchError(SearchStatus status) {
             String errorMessage = "Error: " + status.getErrorCode();
             Log.e(TAG, errorMessage);
-            Toast.makeText(getContext(),errorMessage, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             adapterResult.setList(new ArrayList<>());
         }
     };

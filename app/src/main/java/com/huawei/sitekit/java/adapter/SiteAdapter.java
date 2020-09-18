@@ -64,13 +64,13 @@ public class SiteAdapter extends RecyclerView.Adapter<SiteAdapter.SiteViewHolder
         @SuppressLint("DefaultLocale")
         public void bind(SiteObservable observable) {
             CharSequence message = String.format(
-                "%d. %s\nName: %s\nLocation: %s\n%s\nPOI types: %s",
-                getAdapterPosition() + 1,
-                observable.getSiteId(),
-                observable.getName(),
-                observable.getLocation(),
-                observable.getCoordinates(),
-                observable.getPoiTypes()
+                    "%d. %s\nName: %s\nLocation: %s\n%s\nPOI types: %s",
+                    getAdapterPosition() + 1,
+                    observable.getSiteId(),
+                    observable.getName(),
+                    observable.getLocation(),
+                    observable.getCoordinates(),
+                    observable.getPoiTypes()
             );
 
             textView.setText(message);

@@ -71,7 +71,7 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
         etLocationLatitude = view.findViewById(R.id.editTextLocationLatitude);
         etLocationLongitude = view.findViewById(R.id.editTextLocationLongitude);
         etRadius = view.findViewById(R.id.editTextRadius);
-        etRadius.setFilters(new InputFilter[] { new InputFilterMinMax(1, 50000)});
+        etRadius.setFilters(new InputFilter[]{new InputFilterMinMax(1, 50000)});
 
         view.findViewById(R.id.buttonSearch).setOnClickListener(button -> search());
 
@@ -85,7 +85,7 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
         converterLocationType = new LinkedHashMap<>();
         String[] data = new String[LocationType.values().length + 1];
         int i = 0;
-        for (LocationType type: LocationType.values()) {
+        for (LocationType type : LocationType.values()) {
             converterLocationType.put(type.name(), type);
             data[i++] = type.name();
         }
@@ -125,8 +125,8 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
 
         if (!latitude.isEmpty() && !longitude.isEmpty()) {
             Coordinate location = new Coordinate(
-                Double.parseDouble(latitude),
-                Double.parseDouble(longitude)
+                    Double.parseDouble(latitude),
+                    Double.parseDouble(longitude)
             );
             request.setLocation(location);
         }
@@ -174,7 +174,7 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
         public void onSearchError(SearchStatus status) {
             String errorMessage = "Error: " + status.getErrorCode();
             Log.e(TAG, errorMessage);
-            Toast.makeText(getContext(),errorMessage, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             adapterResult.setList(new ArrayList<>());
         }
     };
@@ -182,7 +182,7 @@ public class KeywordSearchFragment extends Fragment implements SiteAdapter.SiteC
     @Override
     public void onSiteItemClicked(SiteObservable observable) {
         String siteId = observable.getSiteId();
-        String message = "Site ID " + siteId  + " has been saved to clipboard.";
+        String message = "Site ID " + siteId + " has been saved to clipboard.";
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 
         // Save Site Id to clipboard

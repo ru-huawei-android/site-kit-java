@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements TabLayoutMediator
 
     static class SearchViewPagerAdapter extends FragmentStateAdapter {
 
+        private final static int KEYWORD_SEARCH_ID = 0;
+        private final static int NEARBY_SEARCH_ID = 1;
+        private final static int PLACE_DETAIL_ID = 2;
+
         private final static int PAGE_COUNT = 4;
 
         public SearchViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -60,12 +64,15 @@ public class MainActivity extends AppCompatActivity implements TabLayoutMediator
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            switch (position)
-            {
-                case 0: return new KeywordSearchFragment();
-                case 1: return new NearbySearchFragment();
-                case 2: return new PlaceDetailFragment();
-                default: return new QuerySuggestionFragment();
+            switch (position) {
+                case KEYWORD_SEARCH_ID:
+                    return new KeywordSearchFragment();
+                case NEARBY_SEARCH_ID:
+                    return new NearbySearchFragment();
+                case PLACE_DETAIL_ID:
+                    return new PlaceDetailFragment();
+                default:
+                    return new QuerySuggestionFragment();
             }
         }
 
